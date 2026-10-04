@@ -1,219 +1,422 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#072146">
   <title>Datos de transferencia</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Colores BBVA */
+      --navy: #072146;
+      --azul-profundo: #0B3B7D;
+      --azul: #1464A5;
+      --azul-claro: #1E88C8;
+      --cian: #4FC3F7;
+      --hielo: #EEF5FC;
+      --borde: #E3ECF6;
+      --texto: #0B1F3A;
+      --gris: #5B7391;
+      --ok: #1F9D63;
+
+      /* Medidas (iPhone first) */
+      --card-w: 360px;
+      --card-radius: 20px;
+      --pad-x: 16px;
+      --page-pad: 12px;
+      --row-pad-y: 7px;
+      --chip: 30px;
+      --chip-radius: 10px;
+      --icon: 17px;
+      --icon-stroke: 1.4;
+      --tap: 40px;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    .sprite { position: absolute; }
+
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #0A1F44;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at 75% 10%, rgba(30,136,200,0.55) 0%, transparent 45%),
+        radial-gradient(circle at 10% 95%, rgba(42,167,201,0.35) 0%, transparent 40%),
+        linear-gradient(160deg, var(--azul-profundo) 0%, var(--navy) 65%);
+      background-attachment: fixed;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding:
+        calc(var(--page-pad) + env(safe-area-inset-top))
+        calc(var(--page-pad) + env(safe-area-inset-right))
+        calc(var(--page-pad) + env(safe-area-inset-bottom))
+        calc(var(--page-pad) + env(safe-area-inset-left));
+      color: var(--texto);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .card {
-      background: #ffffff;
-      border-radius: 20px;
+      background: #fff;
+      border-radius: var(--card-radius);
       overflow: hidden;
       width: 100%;
-      max-width: 440px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+      max-width: var(--card-w);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45);
     }
 
+    /* ---------- Cabecera ---------- */
     .card-header {
-      background: #1352A2;
-      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, var(--azul-claro) 0%, var(--azul-profundo) 45%, var(--navy) 100%);
+      padding: 14px var(--pad-x);
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
+    .header-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .header-art path, .header-art line {
+      fill: none;
+      stroke: var(--cian);
+      stroke-width: 1.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .header-icon, .header-text { position: relative; z-index: 1; }
     .header-icon {
-      background: rgba(255,255,255,0.15);
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      width: 46px;
-      height: 46px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       color: #fff;
     }
-    .header-sub  { color: rgba(255,255,255,0.65); font-size: 12px; margin-bottom: 2px; }
-    .header-title { color: #fff; font-size: 16px; font-weight: 600; }
+    .header-sub   { color: rgba(255,255,255,0.75); font-size: 11px; margin-bottom: 1px; }
+    .header-title { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: .02em; }
 
-    .card-body { padding: 0 24px; }
+    /* ---------- Iconos ---------- */
+    .ic {
+      width: 1em;
+      height: 1em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: var(--icon-stroke);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .chip {
+      width: var(--chip);
+      height: var(--chip);
+      border-radius: var(--chip-radius);
+      background: linear-gradient(135deg, var(--azul-claro), var(--azul-profundo));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--icon);
+      box-shadow: 0 3px 8px rgba(20,100,165,0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+
+    /* ---------- Filas ---------- */
+    .card-body { padding: 2px var(--pad-x); }
 
     .row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid #f0f0f0;
+      column-gap: 8px;
+      padding: var(--row-pad-y) 0;
+      border-bottom: 1px solid var(--borde);
     }
     .row:last-child { border-bottom: none; }
 
     .row-label {
       display: flex;
       align-items: center;
-      gap: 10px;
-      color: #888;
-      font-size: 13px;
+      gap: 9px;
+      color: var(--gris);
+      font-size: 12px;
+      flex-shrink: 0;
     }
-    .row-label i { font-size: 16px; }
 
     .row-value {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 2px;
+      font-size: 13px;
       font-weight: 500;
-      color: #111;
+      color: var(--texto);
+      text-align: right;
+      min-width: 0;
     }
-    .mono { font-family: 'Courier New', monospace; }
+    .mono { font-family: ui-monospace, 'SF Mono', Menlo, 'Courier New', monospace; font-size: 12.5px; letter-spacing: .01em; }
 
     .copy-btn {
+      width: var(--tap);
+      height: var(--tap);
+      margin-right: -10px;
       background: none;
       border: none;
+      border-radius: 12px;
       cursor: pointer;
-      color: #aaa;
-      padding: 2px;
-      font-size: 15px;
-      transition: color .15s;
-    }
-    .copy-btn:hover { color: #1352A2; }
-    .copy-btn.copied { color: #1D9E75; }
-
-    .card-footer {
-      background: #f7f8fa;
-      border-top: 1px solid #f0f0f0;
-      padding: 12px 24px;
-      font-size: 12px;
-      color: #aaa;
+      color: var(--azul);
       display: flex;
       align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      touch-action: manipulation;
+      transition: background .15s, color .15s;
+    }
+    .copy-btn:active { background: var(--hielo); }
+    .copy-btn:focus-visible { outline: 2px solid var(--cian); outline-offset: -2px; }
+    .copy-btn.copied { color: var(--ok); }
+
+    /* ---------- Footer ---------- */
+    .card-footer {
+      background: var(--hielo);
+      border-top: 1px solid var(--borde);
+      padding: 10px var(--pad-x);
+      font-size: 11px;
+      color: var(--gris);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card-footer .ic { color: var(--azul-claro); font-size: 16px; }
+
+    .promo {
+      width: 100%;
+      max-width: var(--card-w);
+      margin-top: 12px;
+      padding: 16px var(--pad-x) 12px;
+      border-radius: 18px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.18);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      color: #fff;
+    }
+    .promo-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--cian); }
+    .promo-title { font-size: 16px; font-weight: 600; line-height: 1.25; margin-top: 4px; }
+    .promo-text { font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.72); margin-top: 4px; }
+    .promo-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+    .promo-price { flex-shrink: 0; line-height: 1; color: rgba(255,255,255,0.7); font-size: 11px; }
+    .promo-price strong { display: block; color: #fff; font-size: 24px; font-weight: 600; letter-spacing: -.02em; margin-top: 3px; }
+    .promo-price strong span { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.7); letter-spacing: 0; margin-left: 2px; }
+    .cta {
+      flex-shrink: 0;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       gap: 6px;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+      touch-action: manipulation;
+      transition: transform .12s;
+    }
+    .cta .ic { color: #1FA855; font-size: 16px; }
+    .cta:active { transform: scale(.98); }
+    .cta:focus-visible { outline: 2px solid var(--cian); outline-offset: 2px; }
+    .promo-sign { margin-top: 10px; text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); }
+    .promo-sign a { color: rgba(255,255,255,0.65); text-decoration: none; font-weight: 500; }
+
+    /* Pantallas muy angostas (iPhone SE / mini) */
+    @media (max-width: 350px) {
+      :root { --pad-x: 12px; --chip: 28px; }
+      .mono { font-size: 12px; }
+    }
+
+    /* Tablet y escritorio: un poco más de aire */
+    @media (min-width: 600px) {
+      :root { --card-w: 400px; --row-pad-y: 10px; --pad-x: 20px; }
+      .row-value { font-size: 14px; }
+      .mono { font-size: 13.5px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-logo" viewBox="0 0 24 24"><path d="M3.5 20 12 3.5 20.5 20"/><path d="M8.5 20 12 13l3.5 7"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+      <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 21h18M5 18v-7M9.5 18v-7M14.5 18v-7M19 18v-7M12 3 3 8h18z"/></symbol>
+      <symbol id="i-clabe" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></symbol>
+      <symbol id="i-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2.5"/><path d="M2 10h20"/><rect x="5" y="13" width="4" height="2.5" rx=".6"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="3"/><path d="M11 18h2"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect width="13" height="13" x="9" y="9" rx="2.5"/><path d="M5 15a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5.3A8.5 8.5 0 1 1 21 11.5z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-1.8-1-.8.6a3.6 3.6 0 0 1-1.6-1.6l.6-.8-1-1.8z"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2.2 2.2L15 10.5"/></symbol>
+    </defs>
+  </svg>
 
-    <div class="card-header">
+  <main class="card">
+
+    <header class="card-header">
+      <svg class="header-art" viewBox="0 0 360 70" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <line x1="0" y1="35" x2="250" y2="35" opacity=".5"/>
+        <path d="M250 35 H262 L292 -4 L320 74" opacity=".5"/>
+        <path d="M282 74 L296 48 L310 74" opacity=".32"/>
+        <path d="M262 35 H360" opacity=".5"/>
+      </svg>
       <div class="header-icon">
-        <i class="ti ti-credit-card"></i>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-logo"/></svg>
       </div>
-      <div>
+      <div class="header-text">
         <p class="header-sub">Datos para transferencia</p>
-        <p class="header-title">BBVA Libreton</p>
+        <h1 class="header-title">BBVA Libreton</h1>
       </div>
-    </div>
+    </header>
 
-    <div class="card-body">
+    <section class="card-body">
 
       <div class="row">
         <div class="row-label">
-          <i class="ti ti-user"></i>
+          <div class="chip"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></div>
           Titular
         </div>
         <div class="row-value">
           <!-- ESCRIBE AQUÍ TU NOMBRE COMPLETO -->
           <span id="titular">Abigail Canche López</span>
-          <button class="copy-btn" onclick="copy('titular')" title="Copiar">
-            <i class="ti ti-copy" id="icon-titular"></i>
+          <button type="button" class="copy-btn" onclick="copy('titular')" aria-label="Copiar titular">
+            <svg class="ic" viewBox="0 0 24 24" id="icon-titular" aria-hidden="true"><use href="#i-copy"/></svg>
           </button>
         </div>
       </div>
 
       <div class="row">
         <div class="row-label">
-          <i class="ti ti-building-bank"></i>
+          <div class="chip"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bank"/></svg></div>
           Banco
         </div>
-        <div class="row-value">
-          BBVA México
-        </div>
+        <div class="row-value">BBVA México</div>
       </div>
 
       <div class="row">
         <div class="row-label">
-          <i class="ti ti-hash"></i>
+          <div class="chip"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clabe"/></svg></div>
           CLABE
         </div>
         <div class="row-value">
           <!-- ESCRIBE AQUÍ TU CLABE INTERBANCARIA (18 dígitos) -->
           <span class="mono" id="clabe">012 180 015172096463</span>
-          <button class="copy-btn" onclick="copy('clabe')" title="Copiar">
-            <i class="ti ti-copy" id="icon-clabe"></i>
+          <button type="button" class="copy-btn" onclick="copy('clabe')" aria-label="Copiar CLABE">
+            <svg class="ic" viewBox="0 0 24 24" id="icon-clabe" aria-hidden="true"><use href="#i-copy"/></svg>
           </button>
         </div>
       </div>
 
       <div class="row">
         <div class="row-label">
-          <i class="ti ti-credit-card"></i>
+          <div class="chip"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-card"/></svg></div>
           Tarjeta
         </div>
         <div class="row-value">
           <!-- ESCRIBE AQUÍ TU NÚMERO DE TARJETA (o solo los últimos 4 dígitos) -->
           <span class="mono" id="numero">4152 3144 4205 1184</span>
-          <button class="copy-btn" onclick="copy('numero')" title="Copiar">
-            <i class="ti ti-copy" id="icon-numero"></i>
+          <button type="button" class="copy-btn" onclick="copy('numero')" aria-label="Copiar tarjeta">
+            <svg class="ic" viewBox="0 0 24 24" id="icon-numero" aria-hidden="true"><use href="#i-copy"/></svg>
           </button>
         </div>
       </div>
 
       <div class="row">
         <div class="row-label">
-          <i class="ti ti-device-mobile"></i>
+          <div class="chip"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></div>
           Teléfono
         </div>
         <div class="row-value">
           <!-- ESCRIBE AQUÍ TU NÚMERO DE TELÉFONO -->
           <span id="telefono">987 103 9604</span>
-          <button class="copy-btn" onclick="copy('telefono')" title="Copiar">
-            <i class="ti ti-copy" id="icon-telefono"></i>
+          <button type="button" class="copy-btn" onclick="copy('telefono')" aria-label="Copiar teléfono">
+            <svg class="ic" viewBox="0 0 24 24" id="icon-telefono" aria-hidden="true"><use href="#i-copy"/></svg>
           </button>
         </div>
       </div>
 
-    </div>
+    </section>
 
-    <div class="card-footer">
-      <i class="ti ti-shield-check"></i>
+    <footer class="card-footer">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>
       Toca el icono para copiar cada dato
+    </footer>
+
+  </main>
+
+  <aside class="promo">
+    <p class="promo-eyebrow">Plantillas de transferencia</p>
+    <p class="promo-title">¿Quieres una igual, con tus datos?</p>
+    <p class="promo-text">Tu banco, tus colores y un link para compartir. Tus clientes copian tus datos con un toque, 24/7.</p>
+    <div class="promo-row">
+      <p class="promo-price">Solo<strong>$50<span>MXN</span></strong></p>
+      <a class="cta" href="https://wa.me/529871039604?text=Hola%2C%20quiero%20mi%20plantilla%20de%20transferencia" target="_blank" rel="noopener">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>
+        Pedir la mía por WhatsApp
+      </a>
     </div>
-
-  </div>
-  <div style="margin-top: 24px; text-align: center; color: rgba(255,255,255,0.45); font-size: 12px; line-height: 1.8;">
-    ¿Te gustó esta plantilla? Llama al <a href="tel:9871039604" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 500;">9871039604</a> por solo $50 MXN.<br/>
-    <span style="color: rgba(255,255,255,0.3);">Tecreamos una a tu medida ,24/7 visible en la web — Creado por <a href="https://aclsys.net" target="_blank" style="color: rgba(255,255,255,0.5); text-decoration: none; font-weight: 500;">aclsys.net</a></span>
-  </div>
-
+    <p class="promo-sign">Diseñado por <a href="https://aclsys.net" target="_blank" rel="noopener">aclsys.net</a></p>
+  </aside>
 
   <script>
     function copy(id) {
-      const text = document.getElementById(id).textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const icon = document.getElementById('icon-' + id);
-        const btn = icon.closest('button');
-        icon.className = 'ti ti-check';
+      var text = document.getElementById(id).textContent.trim();
+
+      function done() {
+        var icon = document.getElementById('icon-' + id);
+        var btn = icon.closest('button');
+        icon.firstElementChild.setAttribute('href', '#i-check');
         btn.classList.add('copied');
-        setTimeout(() => {
-          icon.className = 'ti ti-copy';
+        setTimeout(function () {
+          icon.firstElementChild.setAttribute('href', '#i-copy');
           btn.classList.remove('copied');
         }, 1800);
-      });
+      }
+
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
     }
   </script>
 
